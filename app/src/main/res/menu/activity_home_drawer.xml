@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_Menu"
+            android:icon="@drawable/ic_restaurant_black_24dp"
+            android:title="@string/title"
+            android:iconTint="@color/colorPrimary"/>
+        <item
+            android:id="@+id/nav_Cart"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="@string/cart"
+            android:iconTint="@color/colorPrimary"/>
+        <item
+            android:id="@+id/nav_Orders"
+            android:icon="@drawable/ic_directions_bike_black_24dp"
+            android:title="@string/orders"
+            android:iconTint="@color/colorPrimary"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="@string/logout"
+            android:iconTint="@color/colorPrimary"/>
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/info"
+            android:iconTint="@color/colorPrimary"/>
+
+    </group>
+
+
+</menu>

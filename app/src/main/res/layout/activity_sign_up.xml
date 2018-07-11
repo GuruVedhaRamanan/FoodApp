@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/Layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faf5f5"
+    tools:context="com.example.android.foodie.SignUp">
+    <TextView
+        android:id="@+id/ShopTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Shop_Title"
+        android:gravity="center"
+        android:textColor="#047610"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:gravity="center"
+        android:textColor="#047610"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:layout_below="@id/ShopTitle" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/SignInButn">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/UserNames"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="பெயர்"
+             android:textSize="34sp"
+            android:inputType="text"
+            app:met_baseColor="@android:color/holo_green_dark"
+            app:met_floatingLabel="highlight"
+            app:met_maxCharacters="11"
+            app:met_singleLineEllipsis="true"
+            app:met_primaryColor="@android:color/black"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/Phonenum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone"
+            android:textSize="34sp"
+            android:inputType="phone"
+            app:met_baseColor="@android:color/holo_green_dark"
+            app:met_floatingLabel="highlight"
+            app:met_maxCharacters="11"
+            app:met_singleLineEllipsis="true"
+            app:met_primaryColor="@android:color/black"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:textSize="34sp"
+            android:inputType="textPassword"
+            app:met_baseColor="@android:color/holo_green_dark"
+            app:met_floatingLabel="highlight"
+            app:met_maxCharacters="11"
+            app:met_singleLineEllipsis="true"
+            app:met_primaryColor="@android:color/black"/>
+    </LinearLayout>
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/SignInButn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signup"
+        android:textSize="20sp"
+        app:buttonColor="#fd4242"
+        android:textColor="@android:color/black"
+        app:shadowColor="@android:color/black"
+        app:shadowEnabled="true"
+        app:shadowHeight="5dp"
+        app:cornerRadius="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="13dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
