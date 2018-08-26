@@ -7,7 +7,7 @@ package com.example.android.foodie.Model;
 public class Food {
     private String Image;
 
-    private String Menu_Id;
+    private String MenuId;
 
     private String Name;
 
@@ -17,9 +17,9 @@ public class Food {
 
     private String Discount;
 
-    public Food(String image, String menu_Id, String name, String contents, String price, String discount) {
+    public Food(String image, String menuId, String name, String contents, String price, String discount) {
         Image = image;
-        Menu_Id = menu_Id;
+        MenuId = menuId;
         Name = name;
         Contents = contents;
         Price = price;
@@ -42,12 +42,12 @@ public class Food {
         Image = image;
     }
 
-    public String getMenu_Id() {
-        return Menu_Id;
+    public String getMenuId() {
+        return MenuId;
     }
 
-    public void setMenu_Id(String menu_Id) {
-        Menu_Id = menu_Id;
+    public void setMenuId(String menuId) {
+        MenuId = menuId;
     }
 
     public String getName() {

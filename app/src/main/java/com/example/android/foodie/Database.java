@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class Database extends SQLiteAssetHelper {
 
     private static final  String Database ="EatIt.db";
@@ -32,7 +31,7 @@ public class Database extends SQLiteAssetHelper {
 
     SQLiteQueryBuilder qb  = new SQLiteQueryBuilder();
 
-    String [] sqlSelect ={"ProductName","ProductId","ProductQuantity","ProductPrice","Discount"};
+    String [] sqlSelect ={"OrderId","ProductName","ProductId","ProductQuantity","ProductPrice","Discount"};
 
     String sqlTable = "OrderDetails";
 
@@ -45,7 +44,9 @@ public class Database extends SQLiteAssetHelper {
     {
             do
         {
-             result.add(new  Order(cursor.getString(cursor.getColumnIndex("ProductId")) ,
+             result.add(new  Order(
+                     cursor.getInt(cursor.getColumnIndex("OrderId")),
+                     cursor.getString(cursor.getColumnIndex("ProductId")) ,
                     cursor.getString(cursor.getColumnIndex("ProductName")),
                     cursor.getString(cursor.getColumnIndex("ProductPrice")),
                    cursor.getString(cursor.getColumnIndex("ProductQuantity")),
@@ -70,6 +71,19 @@ public void addTOCart(Order order)
             order.getProductPrice(),
             order.getDiscount());
     db.execSQL(query);
+}
+
+//public void
+
+public void updateQuantity(Order order)
+{
+    SQLiteDatabase db = getReadableDatabase();
+
+   String query = String.format("UPDATE OrderDetails SET ProductQuantity = %s WHERE OrderId = %d",order.getProductQuantity(),order.getOrderId());
+
+    db.execSQL(query);
+
+
 }
     public void clean()
     {

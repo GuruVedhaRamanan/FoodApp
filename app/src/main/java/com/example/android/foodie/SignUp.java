@@ -25,6 +25,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class SignUp extends AppCompatActivity {
 
+    private SharedPrefernesConfig sharedPrefernesConfig;
+
 
     TextView shoptitle, reg;
 
@@ -52,6 +54,9 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+
+        sharedPrefernesConfig = new SharedPrefernesConfig(getApplicationContext());
 
         shoptitle = (TextView) findViewById(R.id.ShopTitle);
 
@@ -139,6 +144,9 @@ public class SignUp extends AppCompatActivity {
 
                         Toast.makeText(getApplicationContext(), R.string.registered_successfully, Toast.LENGTH_SHORT).show();
 
+                        sharedPrefernesConfig.writeStatus(true);
+                        sharedPrefernesConfig.addname(user.getUserName());
+                        sharedPrefernesConfig.addphone(user.getUserPhoneNumber());
                         Intent intent = new Intent(SignUp.this, Home.class);
                         Common.currentuser = user;
                         intent.putExtra("Name", user.getUserName());

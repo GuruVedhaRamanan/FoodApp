@@ -2,7 +2,6 @@ package com.example.android.foodie;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -16,12 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.android.foodie.Common.Common;
 import com.example.android.foodie.Interface.ItemClickListener;
-import com.example.android.foodie.Model.Category;
 import com.example.android.foodie.Model.Food;
 import com.example.android.foodie.Model.Order;
+import com.example.android.foodie.Service.Notification;
 import com.example.android.foodie.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -33,37 +32,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.android.foodie.R.id.fab;
-
 public class Home extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SharedPrefernesConfig sharedPrefernesConfig;
 
      DatabaseReference items;
 
      TextView user;
 
-    String Username ="";
+
 
     FirebaseRecyclerAdapter<Food,MenuViewHolder> adapter;
 
     RecyclerView recyclerView;
 
-    FirebaseRecyclerAdapter<Category,MenuViewHolder> searchadapter;
-
-
-
-
-
-
-  //  MaterialSearchView materialSearchView;
 
       RecyclerView.LayoutManager layoutManager;
+    List<String> selectedmenuId = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        sharedPrefernesConfig = new SharedPrefernesConfig(getApplicationContext());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
 
         toolbar.setTitle(R.string.items);
 
@@ -71,14 +67,14 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
 
         items = FirebaseDatabase.getInstance().getReference("Food");
 
-        FloatingActionButton faba = (FloatingActionButton) findViewById(fab);
+       /* FloatingActionButton faba = (FloatingActionButton) findViewById(fab);
         faba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(Home.this, CART.class);
                 startActivity(i);
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,11 +89,9 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
 
         user = (TextView) headerview.findViewById(R.id.Users);
 
-        Username = getIntent().getStringExtra("Name");
+        user.setText(sharedPrefernesConfig.readname());
 
-        user.setText(Username);
-
-        user.setText(Common.currentuser.getUserName());
+     //   user.setText(Common.currentuser.getUserName());
 
      //   materialSearchView = (MaterialSearchView)findViewById(R.id.searchbar);
 
@@ -112,6 +106,9 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
         loadlist();
 
 
+        Intent intent = new Intent(Home.this, Notification.class);
+        startService(intent);
+
     }
 
     private void loadlist() {
@@ -123,7 +120,7 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
                MenuViewHolder.class,
                items) {
             @Override
-            protected void populateViewHolder(final MenuViewHolder viewHolder,final Food model, int position) {
+            protected void populateViewHolder(final MenuViewHolder viewHolder, final Food model, final int position) {
 
                 viewHolder.textView.setText(model.getName());
 
@@ -135,31 +132,38 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
 
                 viewHolder.price.setText(format.format(price));
 
-                viewHolder.cart.setOnClickListener(new View.OnClickListener() {
+                viewHolder.cart.setOnClickListener(new View.OnClickListener()
+                {
 
-                    List<String> selectedmenuId = new ArrayList<String>();
+
 
                     @Override
                     public void onClick(View v) {
 
-                        if(!(selectedmenuId.contains(model.getMenu_Id())))
-                        {
-                            int quantity = 1;
 
-                            new Database(Home.this).addTOCart(new Order(
-                                    model.getMenu_Id(),
+
+                        if(!(selectedmenuId.contains(model.getMenuId())))
+                        {
+                            selectedmenuId.add(model.getMenuId());
+                            int quantity = 1;
+                            Order order =  new Order( model.getMenuId(),
                                     model.getName(),
                                     model.getPrice(),
                                     String.valueOf(quantity),
-                                    model.getDiscount()));
+                                    model.getDiscount());
+
+//                           This generates a row in the sqlite database for showing the items....
+
+                            new Database(Home.this).addTOCart(order);
 
                             Snackbar.make(v, R.string.added_to_the_cart, Snackbar.LENGTH_SHORT).show();
 
-                            selectedmenuId.add(model.getMenu_Id());
 
-                        }
+
+                                                  }
                         else
                         {
+                            Toast.makeText(getApplicationContext(),selectedmenuId.get(position),Toast.LENGTH_SHORT).show();
                             Snackbar.make(v,"Already added to the cart", Snackbar.LENGTH_SHORT).show();
                         }
 
@@ -176,7 +180,7 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
                         Intent intent = new Intent(Home.this,Food_Description.class);
 
                         intent.putExtra("MenuId",adapter.getRef(position).getKey());
-
+                    Toast.makeText(getApplicationContext(),model.getMenuId(),Toast.LENGTH_SHORT).show();
                  // the intent will carry the id of each food and display their own images from the firebase
 
                         startActivity(intent);
@@ -236,16 +240,21 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
                 break;
             case R.id.nav_Orders:
 
-                Intent orders = new Intent(Home.this, OrderStatus.class);
+                Intent orders = new Intent(Home.this,OrderStatus.class);
 
                 startActivity(orders);
 
                 break;
             case R.id.nav_logout:
-                Intent in = new Intent(Home.this, SignIn.class);
+
+                sharedPrefernesConfig.writeStatus(false);
+
+                Intent in = new Intent(Home.this,SignIn.class);
+
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                finish();
+
                 startActivity(in);
+
                 finish();
                 break;
             case R.id.nav_info:

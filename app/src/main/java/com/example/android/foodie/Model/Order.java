@@ -6,6 +6,8 @@ package com.example.android.foodie.Model;
 
 public class Order {
 
+    private int OrderId;
+
     private String ProductId;
 
     private String ProductName;
@@ -15,6 +17,23 @@ public class Order {
     private String ProductQuantity;
 
     private String Discount;
+
+    public int getOrderId() {
+        return OrderId;
+    }
+
+    public void setOrderId(int orderId) {
+        OrderId = orderId;
+    }
+
+    public Order(int orderId, String productId, String productName, String productPrice, String productQuantity, String discount) {
+        OrderId = orderId;
+        ProductId = productId;
+        ProductName = productName;
+        ProductPrice = productPrice;
+        ProductQuantity = productQuantity;
+        Discount = discount;
+    }
 
     public Order() {
     }

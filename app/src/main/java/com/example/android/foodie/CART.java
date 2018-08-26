@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.foodie.Common.Common;
 import com.example.android.foodie.Model.Order;
 import com.example.android.foodie.Model.Request;
 import com.example.android.foodie.ViewHolder.CardAdapter;
@@ -30,7 +29,13 @@ import java.util.Random;
 
 import info.hoang8f.widget.FButton;
 
+
+
 public class CART extends AppCompatActivity {
+
+    public SharedPrefernesConfig sharedPrefernesConfig;
+
+    int total = 0;
 
     RecyclerView recyclerView;
 
@@ -60,6 +65,8 @@ public class CART extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
 
+        sharedPrefernesConfig = new SharedPrefernesConfig(this);
+
         ordertable = FirebaseDatabase.getInstance().getReference("Requests");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -76,7 +83,7 @@ public class CART extends AppCompatActivity {
 
         totalcost = (TextView) findViewById(R.id.costs);
 
-        loadlist();
+         loadlist();
 
         buton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,19 +109,19 @@ public class CART extends AppCompatActivity {
 
         alert.setIcon(R.drawable.ic_directions_bike_black_24dp);
 
-     final  EditText Address = new EditText(CART.this);
+             final  EditText Address = new EditText(CART.this);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
              LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-         Address.setLayoutParams(lp);
+             LinearLayout.LayoutParams.MATCH_PARENT);
+              Address.setLayoutParams(lp);
 
 
-  // this will add the address to the alert dialoguebox
-        alert.setView(Address);
+       // this will add the address to the alert dialoguebox
+          alert.setView(Address);
 
 
-        alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+          alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -128,7 +135,7 @@ public class CART extends AppCompatActivity {
 
                     Request request = new Request(
                             Req_id,
-                            Common.currentuser.getUserPhoneNumber(),
+                            sharedPrefernesConfig.readphone(),
                             Customer_Address,
                             totalcost.getText().toString(),
                             cart);
@@ -155,18 +162,22 @@ public class CART extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
 
             dialog.dismiss();
-            new Database(getBaseContext()).clean();
             cart.clear();
+            new Database(getBaseContext()).clean();
+            adapter.notifyDataSetChanged();
+            total = 0;
+
+
         }
 
 
     });
         alert.show();
-
-}
+    }
 
     private void loadlist() {
      // getting the
+
 
         cart = new Database(this).getCarts();
 
@@ -174,11 +185,9 @@ public class CART extends AppCompatActivity {
 
         adapter = new CardAdapter(cart,this);
 
+       //  adapter.onBindViewHolder(CardViewHolder holder , int position)
         recyclerView.setAdapter(adapter);
 
-      // initial price of the purchased items
-
-        int total = 0;
 
         for(Order order : cart)
         {

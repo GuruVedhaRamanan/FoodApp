@@ -11,6 +11,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
 
+    private SharedPrefernesConfig sharedPrefernesConfig;
+
     Button Signup, SignIn;
     TextView text;
 
@@ -24,6 +26,16 @@ public class MainActivity extends AppCompatActivity {
         SignIn = (Button)findViewById(R.id.SignInButn);
 
         text = (TextView)findViewById(R.id.textslogan);
+
+        sharedPrefernesConfig = new SharedPrefernesConfig(getApplicationContext());
+
+        if(sharedPrefernesConfig.readLoginStatus())
+        {
+            Intent intent = new Intent(MainActivity.this,Home.class);
+
+            startActivity(intent);
+        }
+
 
         Typeface FACE = Typeface.createFromAsset(getAssets(),"fonts/ComicRelief.ttf");
 

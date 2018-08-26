@@ -1,5 +1,6 @@
 package com.example.android.foodie.ViewHolder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,58 +9,77 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.example.android.foodie.Database;
 import com.example.android.foodie.Model.Order;
 import com.example.android.foodie.R;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 
-  class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
 
   public TextView text_cart_name,text_price;
 
-  public ElegantNumberButton img_cart_count;
+  public ElegantNumberButton increasebutn;
 
-  public void setText_cart_name(TextView text_cart_name) {
-    this.text_cart_name = text_cart_name;
-  }
 
-  public CardViewHolder(View itemView) {
+
+  CardViewHolder(View itemView) {
         super(itemView);
 
-    text_cart_name = (TextView)itemView.findViewById(R.id.itemname);
+    text_cart_name = itemView.findViewById(R.id.itemname);
 
-    text_price = (TextView)itemView.findViewById(R.id.itemcost);
+    text_price = itemView.findViewById(R.id.itemcost);
 
-    img_cart_count = (ElegantNumberButton) itemView.findViewById(R.id.itemcount);
+      increasebutn =  itemView.findViewById(R.id.quantity);
 
-    img_cart_count.setOnClickListener(this);
+   // Quantity = (TextView)itemView.findViewById(R.id.Quantitytext);
+
+    increasebutn.setOnClickListener(this);
+
   }
 
+
+
     @Override
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
 
     }
+
+
 }
 
 
-public class CardAdapter extends RecyclerView.Adapter<CardViewHolder>{
 
-  private List<Order> listdata  = new ArrayList<>();
 
-  private Context context;
 
-  public CardAdapter(List<Order> listdata, Context context) {
-    this.listdata = listdata;
-    this.context = context;
+
+
+    public class CardAdapter extends RecyclerView.Adapter<CardViewHolder>{
+
+
+    private List<Order> listdata;
+
+     private Context context;
+
+
+
+
+
+
+      public CardAdapter(List<Order> listdata, Context context) {
+      this.listdata = listdata;
+      this.context = context;
   }
 
   @Override
   public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
+      //final int numbers = 1;
 
       LayoutInflater inflator = LayoutInflater.from(context);
 
@@ -70,27 +90,133 @@ public class CardAdapter extends RecyclerView.Adapter<CardViewHolder>{
   }
 
   @Override
-  public void onBindViewHolder(CardViewHolder holder, int position)
+  public void onBindViewHolder(final CardViewHolder holder, @SuppressLint("RecyclerView") final int position)
   {
-  String quantity = holder.img_cart_count.getNumber();
-
-    listdata.get(position).setProductQuantity(quantity);
-
-    Locale locale = new Locale("en","in");
-
-    NumberFormat number = NumberFormat.getCurrencyInstance(locale);
-
-    int price = Integer.parseInt((listdata.get(position).getProductPrice()))*Integer.parseInt(listdata.get(position).getProductQuantity());
-
-    holder.text_price.setText(number.format(price));
-
-    holder.text_cart_name.setText(listdata.get(position).getProductName());
 
 
+      holder.increasebutn.setNumber(listdata.get(position).getProductQuantity());
+
+
+      holder.increasebutn.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
+          @Override
+          public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
+              Order order =    listdata.get(position);
+
+              order.setProductQuantity(String.valueOf(newValue));
+              Locale locale = new Locale("en","in");
+
+              final NumberFormat number = NumberFormat.getCurrencyInstance(locale);
+
+              number.setMaximumFractionDigits(0);
+
+              holder.text_price.setText((number.format(Integer.parseInt((listdata.get(position).getProductPrice()))*Integer.parseInt(listdata.get(position).getProductQuantity()))));
+
+              new Database(context).updateQuantity(order);
+          }
+      });
+
+      Locale locale = new Locale("en","in");
+
+      final NumberFormat number = NumberFormat.getCurrencyInstance(locale);
+
+      number.setMaximumFractionDigits(0);
+
+        final int price =  Integer.parseInt(listdata.get(position).getProductQuantity())*Integer.parseInt(listdata.get(position).getProductPrice());
+
+
+
+          holder.text_price.setText(number.format(price));
+
+         holder.text_cart_name.setText(listdata.get(position).getProductName());
+
+
+   /* holder.increasebutn.setOnClickListener(new View.OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+
+          int numbers =Integer.parseInt( listdata.get(position).getProductQuantity());
+
+          if(numbers < 20) {
+              numbers++;
+
+
+
+           //   Toast.makeText(context, listdata.get(position).getProductQuantity(), Toast.LENGTH_SHORT).show();
+
+
+              int price = calculateprice(position, Integer.parseInt(listdata.get(position).getProductQuantity()));
+
+              holder.Quantity.setText(listdata.get(position).getProductQuantity());
+
+              holder.text_price.setText(number.format(price));
+
+          }
+
+
+
+
+
+
+
+
+
+
+      //  Toast.makeText(context,"Increasing the quantity",Toast.LENGTH_SHORT).show();
+
+
+
+
+
+      }
+    });*/
+    /*  holder.decreasebutn.setOnClickListener(new View.OnClickListener() {
+
+          @Override
+          public void onClick(View v) {
+
+              int numbers =Integer.parseInt( listdata.get(position).getProductQuantity());
+
+              if(numbers > 0) {
+                  numbers--;
+                  Order order =    listdata.get(position);
+
+                  order.setProductQuantity(String.valueOf(numbers));
+
+                  new Database(context).updateQuantity(order);
+
+                //  Toast.makeText(context, listdata.get(position).getProductQuantity(), Toast.LENGTH_SHORT).show();
+
+
+                  int price = calculateprice(position, Integer.parseInt(listdata.get(position).getProductQuantity()));
+
+
+                  holder.text_price.setText(number.format(price));
+
+                  holder.Quantity.setText(listdata.get(position).getProductQuantity());
+              }
+
+
+
+
+
+              {
+             //     Toast.makeText(context, "The item is cancelled", Toast.LENGTH_SHORT).show();
+              }
+
+
+
+
+          }
+      });*/
 
   }
 
-  @Override
+
+
+
+
+    @Override
   public int getItemCount()
   {
     return listdata.size();

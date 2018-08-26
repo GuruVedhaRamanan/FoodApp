@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.foodie.Common.Common;
 import com.example.android.foodie.Model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class SignIn extends AppCompatActivity {
+
+    private  SharedPrefernesConfig sharedPrefernesConfig;
 
   TextView shoptitle,reg;
     MaterialEditText PhoneNumber;
@@ -46,6 +47,8 @@ public class SignIn extends AppCompatActivity {
         password = (MaterialEditText) findViewById(R.id.Password);
 
         shoptitle = (TextView)findViewById(R.id.ShopTitle);
+
+        sharedPrefernesConfig = new SharedPrefernesConfig(getApplicationContext());
 
 
 
@@ -118,12 +121,14 @@ public class SignIn extends AppCompatActivity {
 
                         if (user.getPassword().equals(passwords) )
                             {
+                                sharedPrefernesConfig.writeStatus(true);
+
+
+                                sharedPrefernesConfig.addname(user.getUserName());
+                                sharedPrefernesConfig.addphone(user.getUserPhoneNumber());
                                 progressDialog.dismiss();
                              //   Toast.makeText(getApplicationContext(), "Logged  in  Successful", Toast.LENGTH_SHORT).show();
                                 Intent in = new Intent(SignIn.this,Home.class);
-                                Common.currentuser = user;
-
-                               in.putExtra("Name",user.getUserName());
 
                                 startActivity(in);
 

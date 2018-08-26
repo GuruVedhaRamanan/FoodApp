@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class OrderStatus extends AppCompatActivity {
 
+    private SharedPrefernesConfig sharedPrefernesConfig;
 
     RecyclerView recyclerView;
 
@@ -38,6 +39,7 @@ public class OrderStatus extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        sharedPrefernesConfig = new SharedPrefernesConfig(getApplicationContext());
 
         recyclerView = (RecyclerView)findViewById(R.id.Orders);
 
@@ -49,7 +51,7 @@ public class OrderStatus extends AppCompatActivity {
 
         orders = FirebaseDatabase.getInstance().getReference("Requests");
 
-        loadorder(Common.currentuser.getUserPhoneNumber());
+        loadorder(sharedPrefernesConfig.readphone());
 
     }
 
@@ -70,17 +72,8 @@ public class OrderStatus extends AppCompatActivity {
 
                 viewHolder.Delivery_Address.setText("இடம்:\t \t" + model.getAddress());
 
-                switch (model.getStatus()) {
-                    case "0":
-                        viewHolder.Status.setText("பொருள்கள் பதிவு செய்யப்பட்டது ");
-                        break;
-                    case "1":
-                        viewHolder.Status.setText("பொருள்கள் ஏற்றப்பட்டது");
-                        break;
-                    case "2":
-                        viewHolder.Status.setText("பொருள்கள் சேர்க்கப்பட்டது ");
-                        break;
-                }
+               viewHolder.Status.setText(Common.ConvertStatus(model.getStatus()));
+
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {

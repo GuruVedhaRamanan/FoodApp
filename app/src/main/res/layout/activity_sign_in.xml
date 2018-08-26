@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:textSize="20sp"
-        app:buttonColor="#fd4242"
+        app:fButtonColor="#fd4242"
         android:textColor="@android:color/black"
         app:shadowColor="@android:color/black"
         app:shadowEnabled="true"
